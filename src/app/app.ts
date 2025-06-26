@@ -1,26 +1,12 @@
 import express, { Application, Request, Response } from "express";
-import { model, Schema } from "mongoose";
+import { noteRouter } from "./controllers/notes.controller";
+import { userRouter } from "./controllers/users.controller";
 
 export const app: Application = express();
 
-const noteSchema = new Schema({
-  title: String,
-  content: String,
-});
-
-const Note = model("Note", noteSchema);
-
-app.post("/create-note", async (req: Request, res: Response) => {
-  const myNote = new Note({
-    title: "Mongoose",
-    content: "Learning mongoose",
-  });
-  await myNote.save();
-  
-  res.status(201).json({
-    myNote,
-  });
-});
+app.use(express.json());
+app.use("/notes", noteRouter);
+app.use("/users", userRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Note app is running");
