@@ -10,7 +10,7 @@ noteRouter.post("/create-note", async (req: Request, res: Response) => {
     title: "Mongoose",
     tags: {
       label: "database",
-    },
+    }, 
   });
   await myNote.save();*/
 

@@ -1,5 +1,14 @@
 import { model, Schema } from "mongoose";
-import { IUser } from "../interfaces/user.interfaces";
+import { IAddress, IUser } from "../interfaces/user.interfaces";
+
+const addressSchema = new Schema<IAddress>(
+  {
+    city: { type: String },
+    street: { type: String },
+    zip: { type: Number },
+  },
+  { _id: false }
+);
 
 const userSchema = new Schema<IUser>(
   {
@@ -7,10 +16,36 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
       trim: true,
+      minlength: [3, "Must be at least 3, got {VALUE}"],
+      maxlength: 15,
     },
     email: {
       type: String,
       required: true,
+      loadClass: true,
+      unique: [true, "Email must be unique"],
+      validate: {
+        validator: function (value) {
+          return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+        },
+        message: (props) => `${props.value} is not valid email`,
+      },
+    },
+    phone: {
+      type: String,
+      required: true,
+      validate: {
+        validator: function (value) {
+          return /^(?:\+88|88)?01[3-9]\d{8}$/.test(value);
+        },
+        message: (props) => `${props.value} is not a valid phone number`,
+      },
+    },
+    age: {
+      type: Number,
+      required: true,
+      min: 18,
+      max: 60,
     },
     password: {
       type: String,
@@ -18,8 +53,12 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
+      enum: {
+        values: ["user", "admin"],
+        message: "Role is not valid. got {VALUE} role",
+      },
     },
+    address: { type: addressSchema },
   },
   { versionKey: false, timestamps: true }
 );
