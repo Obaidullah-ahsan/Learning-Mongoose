@@ -21,13 +21,13 @@ noteRouter.post("/create-note", async (req: Request, res: Response) => {
 });
 
 noteRouter.get("/", async (req: Request, res: Response) => {
-  const note = await Note.find();
+  const note = await Note.find().populate("user");
 
   res.status(201).json(note);
 });
 noteRouter.get("/:noteId", async (req: Request, res: Response) => {
   const id = req.params.noteId;
-  const note = await Note.findById(id);
+  const note = await Note.findById(id).populate("user");
 
   res.status(201).json(note);
 });

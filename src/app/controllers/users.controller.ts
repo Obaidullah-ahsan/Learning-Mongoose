@@ -29,6 +29,13 @@ userRouter.post("/create-user", async (req: Request, res: Response) => {
   try {
     // const body = await CreateUserZodSchema.parse(req.body);
     const body = req.body;
+    // const user = new User(body);
+    // const hashPassword = await bcrypt.hash(body.password, 10);
+    // user.password = password;
+
+    // const password = await User.hashPassword(body.password);
+    // body.password = password;
+
     const user = await User.create(body);
 
     res.status(201).json(user);
@@ -46,7 +53,7 @@ userRouter.patch("/:userId", async (req: Request, res: Response) => {
 });
 userRouter.delete("/:userId", async (req: Request, res: Response) => {
   const userId = req.params.userId;
-  const user = await User.findByIdAndDelete(userId);
+  const user = await User.findOneAndDelete({_id : userId});
 
   res.status(201).json(user);
 });
